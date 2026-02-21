@@ -18,8 +18,10 @@ map:
   - addon_config:rw
 options:
   anthropic_api_key: ""
+  verbose_logging: false
 schema:
-  anthropic_api_key: str
+  anthropic_api_key: password
+  verbose_logging: bool
 image: ghcr.io/mdwhitten/ha-tabulate-{arch}
 ports:
   8099/tcp: null
