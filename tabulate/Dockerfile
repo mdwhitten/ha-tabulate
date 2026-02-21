@@ -1,11 +1,12 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.19
 FROM node:20-alpine AS frontend-builder
 
 # Clone and build the React frontend
 RUN apk add --no-cache git
 RUN git clone --depth 1 https://github.com/mdwhitten/tabulate.git /build
 WORKDIR /build
-RUN npm ci && ./node_modules/.bin/tsc -b && ./node_modules/.bin/vite build
+ENV NODE_ENV=development
+RUN npm ci && npx tsc -b && npx vite build
 
 # ── Final image ──────────────────────────────────────────────────────────────
 FROM $BUILD_FROM
