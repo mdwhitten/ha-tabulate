@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.0
+
+### Added
+- **Save / Approve split** — save receipt edits as drafts without finalizing; approve when ready to lock
+- **Swipe-to-delete** on line item rows (mobile touch support)
+- **Emoji icon picker** for category icons with search, grouped by grocery section
+- **Paginated learned items** with server-side search and category filtering
+- Unsaved changes guard on navigation and browser back/forward
+- Negative adjustment support in receipt verify bar
+- Date validation required before saving receipts
+
+### Changed
+- Categorization engine switched from Sonnet to Haiku for significantly faster item classification
+- Batch DB writes for learned item mappings (single executemany instead of sequential inserts)
+- Terminology: "Verified" → "Approved", "Total Verified" → "Total Balanced"
+- Camera icon replaces Upload icon in sidebar and topbar scan button
+
+### Fixed
+- ASI bug with window globals (use local variable)
+- Rules of Hooks violation (useMemo before early returns)
+
 ## 0.1.1
 
 ### Fixed
