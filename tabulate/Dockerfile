@@ -31,9 +31,14 @@ RUN apk add --no-cache \
     curl \
     jq
 
-# Install Python dependencies
+# Install Python dependencies in a virtual environment
+# (--system-site-packages reuses apk-installed numpy/pillow to avoid rebuilding)
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv --system-site-packages $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt \
+RUN pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
 # Copy backend from the tabulate repo
