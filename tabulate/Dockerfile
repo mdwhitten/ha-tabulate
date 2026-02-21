@@ -28,7 +28,8 @@ RUN apk add --no-cache \
     libheif-dev \
     build-base \
     python3-dev \
-    curl
+    curl \
+    jq
 
 # Install Python dependencies
 COPY requirements.txt /tmp/requirements.txt

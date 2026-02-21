@@ -1,11 +1,10 @@
-#!/command/with-contenv bashio
-# shellcheck shell=bash
+#!/command/with-contenv sh
 # ==============================================================================
 # Log exit of Tabulate backend
 # ==============================================================================
 
-bashio::log.info "Tabulate backend stopped (exit code: ${1})"
+echo "[tabulate] Tabulate backend stopped (exit code: ${1})"
 
 if [ "${1}" -ne 0 ] && [ "${1}" -ne 256 ]; then
-    bashio::log.warning "Tabulate backend crashed, restarting..."
+    echo "[tabulate] Backend crashed, restarting..."
 fi

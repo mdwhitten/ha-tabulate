@@ -1,19 +1,16 @@
-#!/command/with-contenv bashio
-# shellcheck shell=bash
+#!/command/with-contenv sh
 # ==============================================================================
 # Start Tabulate backend (FastAPI + uvicorn)
 # ==============================================================================
 
-declare ANTHROPIC_API_KEY
-
 # Read config from HA add-on options
-ANTHROPIC_API_KEY=$(bashio::config 'anthropic_api_key')
+ANTHROPIC_API_KEY=$(jq -r '.anthropic_api_key' /data/options.json)
 
 export ANTHROPIC_API_KEY
 export DB_PATH="/data/tabulate.db"
 export IMAGE_DIR="/data/images"
 
-bashio::log.info "Starting Tabulate backend..."
+echo "[tabulate] Starting Tabulate backend..."
 
 cd /app || exit 1
 
