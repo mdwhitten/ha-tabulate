@@ -1,0 +1,23 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Start Tabulate backend (FastAPI + uvicorn)
+# ==============================================================================
+
+declare ANTHROPIC_API_KEY
+
+# Read config from HA add-on options
+ANTHROPIC_API_KEY=$(bashio::config 'anthropic_api_key')
+
+export ANTHROPIC_API_KEY
+export DB_PATH="/data/tabulate.db"
+export IMAGE_DIR="/data/images"
+
+bashio::log.info "Starting Tabulate backend..."
+
+cd /app || exit 1
+
+exec uvicorn main:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --no-access-log
