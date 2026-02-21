@@ -6,11 +6,11 @@ RUN apk add --no-cache git
 RUN git clone --depth 1 https://github.com/mdwhitten/tabulate.git /build
 WORKDIR /build
 
-# Install ALL dependencies (including devDependencies for tsc + vite)
-RUN npm install --include=dev
+# Install deps with yarn (npm crashes under QEMU emulation on HA builder)
+RUN corepack enable && yarn install
 
 # Build frontend (tsc type-check then vite bundle)
-RUN ./node_modules/.bin/tsc -b && ./node_modules/.bin/vite build
+RUN yarn tsc -b && yarn vite build
 
 # ── Final image ──────────────────────────────────────────────────────────────
 FROM $BUILD_FROM
