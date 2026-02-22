@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0
+## 1.0.0
 
 ### Added
 - Category picker redesigned as a popover with search, matching the emoji picker style
