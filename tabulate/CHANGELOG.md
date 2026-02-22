@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1
+
+### Fixed
+- Custom category colors and icons now display correctly in spending charts and trend graphs
+- New category form auto-scrolls and focuses the name input so the user can see the new entry
+
+### Changed
+- Approved receipts now allow category changes (prices, names, and item add/delete remain locked)
+- Receipts stat card on the dashboard links to the All Receipts page
+
 ## 0.2.0
 
 ### Added
