@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0
+
+### Added
+- Duplicate receipt detection matching on total and date before upload
+- Styled DuplicateWarningModal replacing browser `window.confirm`
+- Backend test suite for categorization service (38 tests)
+- CI workflow running backend and frontend tests on push and PR
+
+### Fixed
+- AI categorization no longer overrides manual or learned category mappings
+
+### Changed
+- Upgraded upstream Tabulate from v1.1.0 to v1.2.0
+
 ## 1.0.0
 
 ### Added
