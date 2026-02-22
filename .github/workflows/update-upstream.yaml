@@ -1,8 +1,8 @@
 name: Update Upstream Tabulate
 
 on:
-  schedule:
-    - cron: "0 8 * * *" # Daily at 8am UTC
+  repository_dispatch:
+    types: [upstream-release]
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -25,7 +25,12 @@ jobs:
       - name: Get latest upstream release
         id: upstream
         run: |
-          tag=$(gh release view --repo mdwhitten/tabulate --json tagName -q .tagName)
+          # Use the tag from repository_dispatch payload if available, otherwise query
+          if [ -n "${{ github.event.client_payload.tag }}" ]; then
+            tag="${{ github.event.client_payload.tag }}"
+          else
+            tag=$(gh release view --repo mdwhitten/tabulate --json tagName -q .tagName)
+          fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
