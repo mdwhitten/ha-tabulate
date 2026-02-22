@@ -1,5 +1,3 @@
-## v0.2.2
-
 ### Added
 - Bottom tab bar navigation when running inside Home Assistant ingress (replaces sidebar for mobile-friendly navigation)
 - Mobile bottom-sheet modal for editing line items (replaces cramped inline table editing on small screens)
@@ -17,4 +15,4 @@
 
 ### Fixed
 - Category matching now prefers most specific learned mapping (e.g., "coconut milk" → Pantry wins over "milk" → Dairy)
-- Status badge no longer wraps to two lines on mobile
+- Status badge no longer wraps to two lines on mobile.
