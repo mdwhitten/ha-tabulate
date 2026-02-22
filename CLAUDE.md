@@ -20,7 +20,7 @@ tabulate/
 
 ## How the App Code Gets In
 
-The Dockerfile clones `https://github.com/mdwhitten/tabulate.git` (shallow, `--depth 1`, main branch) at build time. It is NOT a submodule. The publish workflow builds fresh images on each release, pulling the latest tabulate main.
+The Dockerfile clones `https://github.com/mdwhitten/tabulate.git` at a **pinned release tag** (shallow, `--depth 1`) at build time. The tag is set via the `TABULATE_VERSION` build arg in the Dockerfile (e.g. `v1.0.0`). It is NOT a submodule.
 
 ## Architecture
 
@@ -31,14 +31,15 @@ The Dockerfile clones `https://github.com/mdwhitten/tabulate.git` (shallow, `--d
 
 ## Releasing a New Version
 
-1. **Bump version** in `tabulate/config.yaml` (the `version:` field)
-2. **Update changelog** in `tabulate/CHANGELOG.md` — add a new section at the top with the version number and describe changes under Added/Changed/Fixed headings
-3. **Commit and push** both files to main
-4. **Create a GitHub release** with tag `v<version>` (e.g. `v0.2.0`):
+1. **Bump `TABULATE_VERSION`** in `tabulate/Dockerfile` to the new upstream release tag (e.g. `v1.1.0`)
+2. **Bump version** in `tabulate/config.yaml` (the `version:` field)
+3. **Update changelog** in `tabulate/CHANGELOG.md` — add a new section at the top with the version number and describe changes under Added/Changed/Fixed headings
+4. **Commit and push** all files to main
+5. **Create a GitHub release** with tag `v<version>` (e.g. `v0.2.0`):
    ```
    gh release create v0.2.0 --title "v0.2.0" --notes "<release notes>"
    ```
-5. The `publish.yaml` workflow triggers automatically, building and pushing `ghcr.io/mdwhitten/ha-tabulate-{amd64,aarch64}` images
+6. The `publish.yaml` workflow triggers automatically, building and pushing `ghcr.io/mdwhitten/ha-tabulate-{amd64,aarch64}` images
 
 **Important**: The version in `config.yaml` must match the release tag (minus the `v` prefix). HA uses `config.yaml` version to detect updates.
 

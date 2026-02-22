@@ -1,9 +1,11 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.19
 FROM node:20-alpine AS frontend-builder
 
-# Clone the React frontend
+ARG TABULATE_VERSION=v1.0.0
+
+# Clone the React frontend at a pinned release tag
 RUN apk add --no-cache git
-RUN git clone --depth 1 https://github.com/mdwhitten/tabulate.git /build
+RUN git clone --depth 1 --branch ${TABULATE_VERSION} https://github.com/mdwhitten/tabulate.git /build
 WORKDIR /build
 
 # Install deps with yarn (npm crashes under QEMU emulation on HA builder)

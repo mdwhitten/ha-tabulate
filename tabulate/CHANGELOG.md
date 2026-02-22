@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.3
+
+### Added
+- Receipt crop flow with pre-upload and re-crop support
+- Average amount column in trends breakdown table
+- URL routing with browser history support
+- Search and status filters on All Receipts list
+
+### Changed
+- Upgraded to React 19 and Tailwind CSS 4
+- Pinned Docker build to upstream Tabulate v1.0.0 release tag
+
+### Fixed
+- Stacked bar chart uses clipPath for uniform corner rounding
+- Y-axis scaling uses finer steps to fill chart area
+- Scan button alignment and popup menu cutoff on mobile
+- Desktop table padding restored to appropriate values
+
 ## 0.2.2
 
 ### Added
