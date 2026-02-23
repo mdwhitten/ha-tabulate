@@ -1,7 +1,7 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.19
 FROM node:20-alpine AS frontend-builder
 
-ARG TABULATE_VERSION=v1.2.1
+ARG TABULATE_VERSION=v1.2.2
 
 # Clone the React frontend at a pinned release tag
 RUN apk add --no-cache git
