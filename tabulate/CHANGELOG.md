@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.1
+
+
+### Fixed
+- Item mapping lookup now ignores spaces so OCR variants like KS Steakstrip and KSSteakstrip match the same rule
+
+### Removed
+- Home Assistant theme awareness (accent color and dark mode detection from parent HA iframe) — caused visual regressions
+
+### Changed
+- Upgraded upstream Tabulate from v1.2.2 to v1.2.3
+
+
 ## 1.3.0
 
 
