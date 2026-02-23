@@ -50,11 +50,37 @@ jobs:
         if: steps.check.outputs.needed == 'true'
         id: addon
         run: |
+          # Parse old and new upstream versions to determine bump type
+          old_upstream="${{ steps.current.outputs.version }}"
+          new_upstream="${{ steps.upstream.outputs.tag }}"
+          old_upstream="${old_upstream#v}"
+          new_upstream="${new_upstream#v}"
+
+          IFS='.' read -r old_major old_minor _old_patch <<< "$old_upstream"
+          IFS='.' read -r new_major new_minor _new_patch <<< "$new_upstream"
+
+          if [ "$new_major" -gt "$old_major" ]; then
+            bump="major"
+          elif [ "$new_minor" -gt "$old_minor" ]; then
+            bump="minor"
+          else
+            bump="patch"
+          fi
+          echo "Upstream bump type: $bump ($old_upstream → $new_upstream)"
+
+          # Apply the same bump type to the add-on version
           current=$(grep '^version:' tabulate/config.yaml | sed 's/version: *"\(.*\)"/\1/')
           IFS='.' read -r major minor patch <<< "$current"
-          new_version="${major}.$((minor + 1)).0"
+
+          case "$bump" in
+            major) new_version="$((major + 1)).0.0" ;;
+            minor) new_version="${major}.$((minor + 1)).0" ;;
+            patch) new_version="${major}.${minor}.$((patch + 1))" ;;
+          esac
+
           echo "current=$current" >> "$GITHUB_OUTPUT"
           echo "new=$new_version" >> "$GITHUB_OUTPUT"
+          echo "Add-on version: $current → $new_version"
 
       - name: Fetch upstream changelog
         if: steps.check.outputs.needed == 'true'
