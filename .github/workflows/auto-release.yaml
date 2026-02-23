@@ -6,14 +6,15 @@ on:
     branches: [main]
 
 jobs:
-  release:
-    name: Create release
+  prepare:
+    name: Prepare release
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     outputs:
       tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Extract version from PR title
         id: version
@@ -28,16 +29,33 @@ jobs:
             echo "PR title is not a semver release tag, skipping"
           fi
 
+  publish:
+    name: Publish images
+    needs: prepare
+    if: needs.prepare.outputs.tag
+    uses: ./.github/workflows/publish.yaml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    secrets: inherit
+
+  release:
+    name: Create release
+    needs: [prepare, publish]
+    if: needs.prepare.outputs.tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Checkout code
-        if: steps.version.outputs.tag
         uses: actions/checkout@v4
         with:
           ref: main
 
       - name: Extract changelog for version
-        if: steps.version.outputs.tag
         env:
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           awk -v ver="$VERSION" '
             /^## / {
@@ -49,23 +67,11 @@ jobs:
           cat /tmp/release_notes.md
 
       - name: Create GitHub release
-        if: steps.version.outputs.tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.version.outputs.tag }}
+          TAG: ${{ needs.prepare.outputs.tag }}
         run: |
           gh release create "$TAG" \
             --title "$TAG" \
             --notes-file /tmp/release_notes.md \
             --target main
-
-  publish:
-    name: Publish images
-    needs: release
-    if: needs.release.outputs.tag
-    uses: ./.github/workflows/publish.yaml
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-    secrets: inherit
