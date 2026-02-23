@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.2
+
+
+### Fixed
+- Backend startup crash when item_mappings table contains both space-containing and space-free normalized keys (e.g. ground beef and groundbeef), causing a UNIQUE constraint failure
+
+### Changed
+- Upgraded upstream Tabulate from v1.2.3 to v1.2.4
+
+
 ## 1.3.1
 
 
