@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+
+
+### Fixed
+- Changing a learned item's category now updates the mappings table instead of misrouting to line items
+- Category filter chips on the Learned Items page now display custom category icons and colors
+
+### Changed
+- Upgraded upstream Tabulate from v1.2.0 to v1.2.1
+
+
 ## 1.1.0
 
 ### Added
