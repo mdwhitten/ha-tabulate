@@ -137,7 +137,7 @@ jobs:
           git push -u origin "$branch"
 
           gh pr create \
-            --title "Bump upstream Tabulate to ${{ steps.upstream.outputs.tag }}" \
+            --title "v${{ steps.addon.outputs.new }}" \
             --body "$(cat <<EOF
           ## Summary
           - Upgrades upstream Tabulate from \`${{ steps.current.outputs.version }}\` to \`${{ steps.upstream.outputs.tag }}\`

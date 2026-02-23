@@ -1,0 +1,51 @@
+name: Validate PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate release PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title is valid semver
+        id: version
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$PR_TITLE" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            version="${BASH_REMATCH[1]}"
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+            echo "PR title is valid semver (version: $version)"
+          else
+            echo "::error::PR title '$PR_TITLE' does not match expected format: v<major>.<minor>.<patch> (e.g. v1.2.0)"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check config.yaml version matches
+        env:
+          EXPECTED: ${{ steps.version.outputs.version }}
+        run: |
+          actual=$(grep '^version:' tabulate/config.yaml | sed 's/version: *"\(.*\)"/\1/')
+          if [ "$actual" = "$EXPECTED" ]; then
+            echo "config.yaml version ($actual) matches PR title"
+          else
+            echo "::error::config.yaml version ($actual) does not match PR title version ($EXPECTED). Update tabulate/config.yaml."
+            exit 1
+          fi
+
+      - name: Check CHANGELOG.md has entry for version
+        env:
+          EXPECTED: ${{ steps.version.outputs.version }}
+        run: |
+          if grep -q "^## $EXPECTED" tabulate/CHANGELOG.md; then
+            echo "CHANGELOG.md has entry for version $EXPECTED"
+          else
+            echo "::error::CHANGELOG.md is missing a '## $EXPECTED' section. Add changelog entries for this version."
+            exit 1
+          fi

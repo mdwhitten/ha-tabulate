@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  release:
+    name: Create release
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Extract version from PR title
+        id: version
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$PR_TITLE" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "tag=$PR_TITLE" >> "$GITHUB_OUTPUT"
+            echo "version=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+            echo "Release version: $PR_TITLE"
+          else
+            echo "PR title is not a semver release tag, skipping"
+          fi
+
+      - name: Checkout code
+        if: steps.version.outputs.tag
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Extract changelog for version
+        if: steps.version.outputs.tag
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v ver="$VERSION" '
+            /^## / {
+              if (found) exit
+              if ($2 == ver) { found=1; next }
+            }
+            found { print }
+          ' tabulate/CHANGELOG.md | sed '/./,$!d' > /tmp/release_notes.md
+          cat /tmp/release_notes.md
+
+      - name: Create GitHub release
+        if: steps.version.outputs.tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file /tmp/release_notes.md \
+            --target main
+
+  publish:
+    name: Publish images
+    needs: release
+    if: needs.release.outputs.tag
+    uses: ./.github/workflows/publish.yaml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    secrets: inherit
