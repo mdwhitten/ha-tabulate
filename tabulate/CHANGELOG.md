@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.4
+
+
+### Fixed
+- Learned item categorization no longer matches wrong category from short generic seed mappings (e.g. milk seed matching Taste of Thai Coconut Milk)
+- Swipe-to-delete on learned items table now reveals red across the full row width instead of being cramped into a narrow strip
+
+### Changed
+- Upgraded upstream Tabulate from v1.2.5 to v1.2.6
+
+
 ## 1.3.3
 
 
