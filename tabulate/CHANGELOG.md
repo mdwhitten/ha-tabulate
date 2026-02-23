@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.3
+
+
+### Fixed
+- Scan button no longer extends outside the bottom tab bar in embedded mode
+- Status column on mobile receipts list now shows a compact icon-only badge instead of overflowing offscreen
+- Swipe-to-delete on learned items table no longer shows fragmented red strips across cells on tablet — only the delete action column reveals the indicator
+- Disabled categories are excluded from AI categorization prompts, learned mapping lookups, and the category picker dropdown
+
+### Changed
+- Upgraded upstream Tabulate from v1.2.4 to v1.2.5
+
+
 ## 1.3.2
 
 
