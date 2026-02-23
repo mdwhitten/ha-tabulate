@@ -48,3 +48,68 @@ The Dockerfile clones `https://github.com/mdwhitten/tabulate.git` at a **pinned 
 - Uses **yarn** instead of npm because npm crashes under QEMU emulation on the HA multi-arch builder
 - Python venv uses `--system-site-packages` to reuse apk-installed numpy/pillow (avoids slow native compilation)
 - Two architectures: `amd64` and `aarch64` (covers x86 servers and Raspberry Pi)
+
+## Upstream Tabulate API Reference
+
+Source: [github.com/mdwhitten/tabulate](https://github.com/mdwhitten/tabulate). All endpoints are prefixed with `/api`. No auth layer — relies on HA ingress. CORS is fully open (`*`).
+
+### Health & Diagnostics
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/api/health` | Returns `{ status, version }` |
+| GET | `/api/diagnose` | Checks tesseract, pytesseract, pillow, HEIC support, data dir, Anthropic key |
+
+### Receipts (`/api/receipts`)
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| POST | `/api/receipts/upload` | **Upload receipt image** — multipart form: `file` (image), optional `store_name_hint` (string), optional `crop_corners` (JSON `[[x,y],…]` fractions). Runs OCR + Claude Vision categorization. Returns `ProcessingResult` with receipt_id, parsed items, totals, thumbnail. |
+| GET | `/api/receipts` | List receipts (paginated: `?limit=50&offset=0`). Returns summary with id, store, date, total, item_count, status. |
+| GET | `/api/receipts/{id}` | Full receipt with line items |
+| POST | `/api/receipts/{id}/save` | Apply corrections and/or approve. Body: `{ corrections, price_corrections, name_corrections, manual_total, receipt_date, store_name, new_items, deleted_item_ids, approve }`. `approve=true` → status='verified'. |
+| DELETE | `/api/receipts/{id}` | Delete receipt + image files |
+| GET | `/api/receipts/{id}/image` | Serve original JPEG |
+| GET | `/api/receipts/{id}/thumbnail` | Serve thumbnail (falls back to full image) |
+| GET | `/api/receipts/{id}/detect-edges` | Edge detection on stored image → `{ corners: [[x,y],…] }` |
+| POST | `/api/receipts/detect-edges-raw` | Edge detection on uploaded image (multipart `file`, no DB save) |
+| POST | `/api/receipts/{id}/crop` | Crop stored image in-place. Body: `{ corners: [[x,y],…] }` |
+| GET | `/api/receipts/check-duplicates` | `?total=&receipt_date=&exclude_id=` → matching receipts |
+| GET | `/api/receipts/diagnose` | Receipt subsystem diagnostics |
+
+**Upload details**: Accepts JPEG, PNG, HEIC, WebP, BMP, TIFF. Auto-normalizes EXIF orientation, re-encodes as JPEG. Saves to `/data/images/{uuid}.jpg`. Generates thumbnail. nginx limit: 20 MB, 120 s timeout.
+
+### Items (`/api/items`)
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| PATCH | `/api/items/{id}/category` | Update item category. Body: `{ category }` |
+| GET | `/api/items/mappings` | List learned mappings (paginated: `?limit=50&offset=0&search=&category=`). Returns `{ total, items }`. |
+| PATCH | `/api/items/mappings/{id}/category` | Update mapping category. Body: `{ category }` |
+| DELETE | `/api/items/mappings/{id}` | Delete learned mapping |
+| GET | `/api/items/categories` | List category name strings |
+
+### Categories (`/api/categories`)
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/api/categories` | List all categories with id, name, color (hex), icon (emoji), is_builtin, is_disabled, sort_order |
+| POST | `/api/categories` | Create custom category. Body: `{ name, color?, icon? }` |
+| PATCH | `/api/categories/{id}` | Update category. Body: `{ name?, color?, icon?, is_disabled? }`. Built-ins: only is_disabled is mutable. |
+| DELETE | `/api/categories/{id}` | Delete custom category (reassigns items to "Other"). Built-ins protected. |
+
+### Trends (`/api/trends`)
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/api/trends/monthly` | Monthly spending by category (`?months=6`, range 1-24). Only verified receipts. |
+| GET | `/api/trends/monthly/{year}/{month}` | Single month detail breakdown by category + store |
+| GET | `/api/trends/stores` | Store breakdown (`?months=3`, range 1-12) — receipt_count, total_spent, avg_trip |
+| GET | `/api/trends/summary` | Dashboard: month_total, receipt_count, items_learned, avg_trip |
+
+### Key Details
+
+- **Receipt statuses**: `pending` (draft) → `verified` (finalized via save with `approve=true`)
+- **Categorization sources**: `ai` (Claude Vision) or `manual` (user-corrected)
+- **Item mappings**: Learned rules (normalized_key → category) for auto-categorization of future receipts
+- **Data**: SQLite at `/data/tabulate.db`, images at `/data/images/`
