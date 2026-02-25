@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.4.0
+
+
+### Added
+- Category item drill-down in trends view — tap a category to see its individual items
+- Mobile overflow menu (•••) on receipt review topbar with Rescan, Save, and Delete actions
+- Green approve icon button in mobile topbar for quick one-tap approval
+
+### Changed
+- Topbar height increased for easier tapping on mobile (h-12 → h-14)
+- Back button enlarged with visible border outline for better mobile tap target
+- Receipt review footer streamlined — Cancel/Close removed (back button handles navigation), Rescan/Delete hidden on mobile (moved to topbar overflow), Save/Approve stretch full-width on small screens
+- All item mappings (both AI and manual corrections) are now deferred until receipt approval — cancelling or deleting an unreviewed receipt no longer leaves orphaned mappings behind
+
+### Fixed
+- Receipt date field not tappable on mobile when empty
+- Date field now stays visibly editable while receipt is unverified
+- Bottom padding added so content doesn't butt against the tab bar in embedded mode
+- Category source badge (AI/Manual/Learned) now updates to Manual immediately when the user overrides a category, instead of waiting until save
+
+- Upgraded upstream Tabulate from v1.2.6 to v1.3.0
+
+
 ## 1.3.4
 
 
