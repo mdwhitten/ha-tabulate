@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.4.1
+
+
+### Added
+- Edit button on verified receipts — unlocks date, store name, and categories for correction while keeping items, prices, and totals locked
+- Categorization failure detection with retry banner on receipt review
+- GitHub Actions workflow for Playwright E2E tests with artifact upload
+- E2E test coverage for editing approved receipts (click Edit, change fields, save) on desktop and mobile
+- Mobile E2E test suites for navigation (hamburger menu), All Receipts (hidden columns, compact badges), Trends (bottom sheet category drill-down), and Learned Items (swipe-to-delete)
+- Playwright  (Pixel 5) project for mobile viewport E2E testing
+- Desktop-only skip guards on sidebar navigation and inline expansion tests that fail at mobile viewport
+
+### Changed
+- Verified receipts are now fully read-only by default (categories included); editing requires explicitly tapping Edit
+
+### Fixed
+- Price corrections could modify line items belonging to a different receipt — query now scoped to 
+- Receipt date field accepted arbitrary strings (e.g. ) that broke trend queries — now validated as ISO 
+- Empty/whitespace-only store name was stored as  instead of being treated as null
+- New items accepted nonexistent or disabled categories — now validated against the categories table
+- Negative manual total accepted and stored — now rejected with 422
+- SQL injection vector in image serving helper — column name now validated against a whitelist
+- SQL fragment interpolation in receipt save endpoint replaced with parameterized query
+- Wildcard CORS no longer sends credentials; added  env var for explicit origin lists
+- API key prefix no longer leaked in  response — only reports presence
+- File upload now validates Content-Type against allowed image types and enforces 20 MB size cap server-side
+- Backend port in Docker Compose bound to  so it's not exposed to the network
+- Crop endpoint body changed from unvalidated  to a Pydantic model with typed  field
+- Image file serving now verifies resolved paths are contained within  to prevent path traversal
+- Trends expanded-item column layout misaligned and scroll lock bug on mobile
+- Empty footer bar visible on mobile for verified receipts with no actions
+
+- Upgraded upstream Tabulate from v1.3.0 to v1.3.1
+
+
 ## 1.4.0
 
 
