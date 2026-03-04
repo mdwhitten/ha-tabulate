@@ -16,27 +16,9 @@ RUN yarn tsc -b && yarn vite build
 
 # Self-host Google Fonts to avoid render-blocking external CSS @import.
 # Tablets in HA ingress can stall 30+ seconds waiting for fonts.googleapis.com.
-RUN FONTS_DIR=/build/dist/assets/fonts && mkdir -p "$FONTS_DIR" \
-    && wget -q -O "$FONTS_DIR/inter-300.woff2" "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuOKfMZs.woff2" \
-    && wget -q -O "$FONTS_DIR/inter-400.woff2" "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZs.woff2" \
-    && wget -q -O "$FONTS_DIR/inter-500.woff2" "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fMZs.woff2" \
-    && wget -q -O "$FONTS_DIR/inter-600.woff2" "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYMZs.woff2" \
-    && wget -q -O "$FONTS_DIR/jetbrains-mono-400.woff2" "https://fonts.gstatic.com/s/jetbrainsmono/v21/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTOlOTk6OThhvA.woff2" \
-    && wget -q -O "$FONTS_DIR/jetbrains-mono-500.woff2" "https://fonts.gstatic.com/s/jetbrainsmono/v21/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTClOTk6OThhvA.woff2" \
-    && for css in /build/dist/assets/*.css; do \
-         sed -i 's|@import url([^)]*fonts\.googleapis\.com[^)]*);||g' "$css"; \
-       done \
-    && printf '%s\n' \
-         "@font-face { font-family: 'Inter'; font-style: normal; font-weight: 300; font-display: swap; src: url(./fonts/inter-300.woff2) format('woff2'); }" \
-         "@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url(./fonts/inter-400.woff2) format('woff2'); }" \
-         "@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url(./fonts/inter-500.woff2) format('woff2'); }" \
-         "@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url(./fonts/inter-600.woff2) format('woff2'); }" \
-         "@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url(./fonts/jetbrains-mono-400.woff2) format('woff2'); }" \
-         "@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url(./fonts/jetbrains-mono-500.woff2) format('woff2'); }" \
-         > /tmp/fonts.css \
-    && for css in /build/dist/assets/*.css; do \
-         cat /tmp/fonts.css "$css" > "$css.tmp" && mv "$css.tmp" "$css"; \
-       done
+# Fetches the CSS dynamically so we always get current woff2 URLs from Google.
+COPY self-host-fonts.sh /tmp/self-host-fonts.sh
+RUN sh /tmp/self-host-fonts.sh /build/dist/assets
 
 # ── Final image ──────────────────────────────────────────────────────────────
 FROM $BUILD_FROM
