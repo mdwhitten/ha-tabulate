@@ -40,8 +40,13 @@ done < /tmp/font-urls.txt
 # 4. Apply all URL rewrites to produce local @font-face CSS
 sed -f /tmp/sed-script.txt /tmp/gfonts.css > /tmp/local-fonts.css
 
-# 5. Strip the external @import from every compiled CSS bundle
+# 5. Strip the external @import from every compiled CSS bundle.
+#    Lightning CSS rewrites @import url('...') → @import"..." (no url() wrapper),
+#    so we handle both the quoted form and the url() form separately.
 for css in "$ASSETS_DIR"/*.css; do
+  # Quoted form (Lightning CSS output): @import"...googleapis...";
+  sed -i 's|@import"[^"]*fonts\.googleapis\.com[^"]*";||g' "$css"
+  # url() form (standard CSS):          @import url(...googleapis...);
   sed -i 's|@import url([^)]*fonts\.googleapis\.com[^)]*);||g' "$css"
 done
 
