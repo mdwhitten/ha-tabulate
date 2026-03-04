@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2
+
+
+### Fixed
+- Blank screen for ~30 seconds on tablets — self-host Google Fonts at build time to eliminate render-blocking external CSS @import that stalls in HA ingress iframe WebViews
+
 ## 1.4.1
 
 
