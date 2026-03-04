@@ -14,6 +14,12 @@ RUN corepack enable && yarn install
 # Build frontend (tsc type-check then vite bundle)
 RUN yarn tsc -b && yarn vite build
 
+# Self-host Google Fonts to avoid render-blocking external CSS @import.
+# Tablets in HA ingress can stall 30+ seconds waiting for fonts.googleapis.com.
+# Fetches the CSS dynamically so we always get current woff2 URLs from Google.
+COPY self-host-fonts.sh /tmp/self-host-fonts.sh
+RUN sh /tmp/self-host-fonts.sh /build/dist/assets
+
 # ── Final image ──────────────────────────────────────────────────────────────
 FROM $BUILD_FROM
 
