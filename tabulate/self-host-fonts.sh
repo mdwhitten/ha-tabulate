@@ -13,24 +13,31 @@ GFONTS_URL="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&
 mkdir -p "$FONTS_DIR"
 
 # 1. Fetch the Google Fonts CSS (User-Agent must request woff2 format)
-wget -q -O /tmp/gfonts.css --header="User-Agent: Mozilla/5.0 Chrome/120" "$GFONTS_URL"
+wget -q -O /tmp/gfonts.css \
+  --header="User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+  "$GFONTS_URL"
+
+echo "Google Fonts CSS downloaded ($(wc -c < /tmp/gfonts.css) bytes)"
 
 # 2. Extract woff2 URLs into a file (one per line)
-#    Works with busybox grep (no -P needed)
-sed -n 's|.*url(\([^)]*\.woff2\)).*|\1|p' /tmp/gfonts.css > /tmp/font-urls.txt
+#    busybox grep -o works; match url(...woff2) and strip the url() wrapper
+grep -o 'url([^)]*\.woff2)' /tmp/gfonts.css | sed 's/^url(//;s/)$//' > /tmp/font-urls.txt
+
+echo "Found $(wc -l < /tmp/font-urls.txt) font URLs"
 
 # 3. Download each font and build a sed script to rewrite URLs
-cp /tmp/gfonts.css /tmp/local-fonts.css
+> /tmp/sed-script.txt
 i=0
 while IFS= read -r url; do
   filename="font-${i}.woff2"
+  echo "  Downloading $filename from $url"
   wget -q -O "$FONTS_DIR/$filename" "$url"
   # Build sed substitution — use | as delimiter since URLs contain /
   printf 's|%s|./fonts/%s|g\n' "$url" "$filename" >> /tmp/sed-script.txt
   i=$((i + 1))
 done < /tmp/font-urls.txt
 
-# 4. Apply all URL rewrites to produce local CSS
+# 4. Apply all URL rewrites to produce local @font-face CSS
 sed -f /tmp/sed-script.txt /tmp/gfonts.css > /tmp/local-fonts.css
 
 # 5. Strip the external @import from every compiled CSS bundle
