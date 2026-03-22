@@ -127,6 +127,34 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Sync requirements.txt with upstream
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          upstream_tag="${{ steps.upstream.outputs.tag }}"
+
+          # Fetch upstream backend/requirements.txt
+          gh api "repos/mdwhitten/tabulate/contents/backend/requirements.txt?ref=${upstream_tag}" \
+            --jq '.content' | base64 -d > /tmp/upstream_requirements.txt
+
+          # Extract package names (lowercase, before ==) from both files
+          cut -d= -f1 /tmp/upstream_requirements.txt | tr '[:upper:]' '[:lower:]' | sort > /tmp/upstream_pkgs
+          cut -d= -f1 tabulate/requirements.txt | tr '[:upper:]' '[:lower:]' | sort > /tmp/local_pkgs
+
+          # Find packages in upstream but missing locally
+          missing=$(comm -23 /tmp/upstream_pkgs /tmp/local_pkgs)
+
+          if [ -n "$missing" ]; then
+            echo "Adding missing packages from upstream: $missing"
+            for pkg in $missing; do
+              # Get the full line (with version pin) from upstream
+              grep -i "^${pkg}=" /tmp/upstream_requirements.txt >> tabulate/requirements.txt
+            done
+          else
+            echo "All upstream packages are present locally"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update Dockerfile
         if: steps.check.outputs.needed == 'true'
         run: |
@@ -158,7 +186,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add tabulate/Dockerfile tabulate/config.yaml tabulate/CHANGELOG.md
+          git add tabulate/Dockerfile tabulate/config.yaml tabulate/CHANGELOG.md tabulate/requirements.txt
           git commit -m "Bump upstream Tabulate to ${{ steps.upstream.outputs.tag }}"
           git push -u origin "$branch"
 
