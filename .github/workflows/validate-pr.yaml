@@ -49,3 +49,30 @@ jobs:
             echo "::error::CHANGELOG.md is missing a '## $EXPECTED' section. Add changelog entries for this version."
             exit 1
           fi
+
+      - name: Check requirements.txt includes all upstream packages
+        run: |
+          # Get the upstream tag from the Dockerfile
+          upstream_tag=$(grep 'ARG TABULATE_VERSION=' tabulate/Dockerfile | sed 's/.*TABULATE_VERSION=//')
+
+          # Fetch upstream backend/requirements.txt
+          upstream_req=$(curl -sf "https://raw.githubusercontent.com/mdwhitten/tabulate/${upstream_tag}/backend/requirements.txt")
+          if [ -z "$upstream_req" ]; then
+            echo "::warning::Could not fetch upstream requirements.txt at ${upstream_tag}, skipping check"
+            exit 0
+          fi
+
+          # Extract package names (lowercase, before ==) from both files
+          echo "$upstream_req" | cut -d= -f1 | tr '[:upper:]' '[:lower:]' | sort > /tmp/upstream_pkgs
+          cut -d= -f1 tabulate/requirements.txt | tr '[:upper:]' '[:lower:]' | sort > /tmp/local_pkgs
+
+          # Find packages in upstream but missing locally
+          missing=$(comm -23 /tmp/upstream_pkgs /tmp/local_pkgs)
+
+          if [ -n "$missing" ]; then
+            echo "::error::tabulate/requirements.txt is missing upstream packages: $missing"
+            echo "Add the missing packages to tabulate/requirements.txt"
+            exit 1
+          else
+            echo "All upstream packages are present in requirements.txt"
+          fi
