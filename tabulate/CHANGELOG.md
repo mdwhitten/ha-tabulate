@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5.0
+
+
+### Added
+- PDF receipt upload support — single and multi-page PDFs are converted to JPEG via  for thumbnails and Vision enrichment
+- Direct text extraction from text-based PDFs, skipping Tesseract OCR for faster processing
+- Frontend skips crop stage for PDF uploads since digital documents don't need perspective correction
+
+### Fixed
+- Trends router tests used hardcoded Feb 2026 dates causing failures in later months — now use dynamic dates relative to today
+
+### Changed
+- Upgraded upstream Tabulate from v1.3.1 to v1.4.0
+
+
 ## 1.4.2
 
 
