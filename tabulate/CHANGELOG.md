@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.1
+
+### Fixed
+- Add missing pymupdf dependency required for PDF receipt upload support added in v1.5.0
+
+### Changed
+- Update-upstream workflow now auto-syncs requirements.txt with upstream packages
+- PR validation workflow now checks that all upstream Python packages are present locally
+
 ## 1.5.0
 
 
