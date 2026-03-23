@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.1
+## 1.5.2
 
 ### Fixed
 - Add missing pymupdf dependency required for PDF receipt upload support added in v1.5.0
