@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.5.1
+## 1.5.2
 
 ### Fixed
 - Add missing pymupdf dependency required for PDF receipt upload support added in v1.5.0
+- Docker build failure on Alpine (aarch64) — pymupdf source compilation needs libclang for C++ binding generation
 
 ### Changed
 - Update-upstream workflow now auto-syncs requirements.txt with upstream packages
