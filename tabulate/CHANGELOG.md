@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.2
+
+
+### Changed
+- Replaced  with  +  for PDF support — pymupdf has no musllinux aarch64 wheels and was adding ~50 minutes to Docker builds under QEMU emulation by compiling MuPDF from source. The new libraries install in seconds on every architecture (pdf2image uses the system  binary, pypdf is pure Python). PDF rendering DPI, text extraction, and multi-page stitching behavior are unchanged.
+
+- Upgraded upstream Tabulate from v1.4.0 to v1.4.1
+
+
 ## 1.5.1
 
 ### Fixed

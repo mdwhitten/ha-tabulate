@@ -9,3 +9,5 @@ numpy==2.2.3
 pymupdf==1.25.3
 python-multipart==0.0.22
 pydantic==2.12.5
+pdf2image==1.17.0
+pypdf==6.11.0
