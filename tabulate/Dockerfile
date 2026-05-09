@@ -36,6 +36,7 @@ RUN apk add --no-cache \
     libheif-dev \
     build-base \
     python3-dev \
+    poppler-utils \
     curl \
     jq
 
@@ -45,14 +46,9 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv --system-site-packages $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# pymupdf has no musllinux wheels, so pip builds from source on Alpine.
-# The build's C++ binding generator (mupdfwrap.py) loads libclang at runtime.
-RUN apk add --no-cache --virtual .pymupdf-build-deps clang-dev
-
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
-    && rm /tmp/requirements.txt \
-    && apk del .pymupdf-build-deps
+    && rm /tmp/requirements.txt
 
 # Copy backend from the tabulate repo
 COPY --from=frontend-builder /build/backend /app

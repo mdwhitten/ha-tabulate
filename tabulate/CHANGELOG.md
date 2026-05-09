@@ -3,10 +3,10 @@
 ## 1.5.2
 
 ### Fixed
-- Add missing pymupdf dependency required for PDF receipt upload support added in v1.5.0
-- Docker build failure on Alpine (aarch64) — pymupdf source compilation needs libclang for C++ binding generation
+- Docker build taking 80+ minutes — replaced pymupdf (compiled from source on Alpine for ~50 min) with pdf2image + pypdf (pure Python / system packages, installs in seconds)
 
 ### Changed
+- PDF rendering now uses poppler (pdftoppm) instead of MuPDF; text extraction uses pypdf
 - Update-upstream workflow now auto-syncs requirements.txt with upstream packages
 - PR validation workflow now checks that all upstream Python packages are present locally
 
