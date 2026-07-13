@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.0
+
+
+### Fixed
+- Release pipeline: switched the Docker build cache from the GitHub Actions cache () to a per-image registry cache (, a  tag in ghcr) to fix intermittent  failures during release builds
+
+### Changed
+- Upgraded upstream Tabulate from v1.4.1 to v1.5.1
+
+
 ## 1.5.2
 
 ### Fixed
