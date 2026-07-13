@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.6.0
+
+### Added
+- Multi-upload — select several receipt images/PDFs at once, or snap photos one after another, and process the whole batch in parallel
+- Review queue — after a multi-upload, review receipts one at a time; Approve or Skip advances to the next, and the last returns to the receipts list (others stay pending)
+- On-device document scanning — automatic paper-edge detection and true perspective correction now run in the browser (vendored OpenCV.js + jscanify), so a clean, deskewed image is uploaded for OCR and Claude Vision; falls back to the server detector or the original image when the scanner can't load
+- README screenshots
+
+### Changed
+- Image uploads are perspective-corrected client-side instead of relying on the server-side numpy edge detector (the server detector is retained as a fallback)
+
+### Fixed
+- Trends `/stores` breakdown tests used hardcoded Feb 2026 dates and failed once outside the endpoint's 3-month window — now use dates relative to today
+- Removed the unused `_fallback_corners` helper in the image service
+- Release pipeline: switched the Docker build cache from the GitHub Actions cache () to a per-image registry cache (, a  tag in ghcr) to fix intermittent  failures during release builds
+
+### Changed
+- Upgraded upstream Tabulate from v1.4.1 to v1.5.1
+
+
 ## 1.5.2
 
 ### Fixed
