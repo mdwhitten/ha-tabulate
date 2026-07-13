@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.7.0
+
+
+### Added
+- The pristine pre-crop image is now retained, so a crop is always reversible. Edit Crop re-crops from the original and offers Reset — Use Full Image to undo a bad crop entirely.
+
+### Changed
+- Multi-upload now steps through the crop dialog for each receipt (auto-detected corners pre-filled) instead of silently auto-cropping — wrinkled/curled receipts often need a manual nudge, and nothing is committed without a look.
+- Uploads send the original alongside the client-corrected scan; re-crops go through a new  endpoint that swaps the displayed image while preserving the original (the current image is copied to the original on the first destructive re-crop).
+
+### Fixed
+- Bad auto-crops were unrecoverable because only the cropped image was stored — the original is now kept, so crops can always be redone.
+- More robust paper detection: a custom  quad detector with a confidence gate that rejects implausible detections (e.g. grabbing the whole table or a tiny speck) rather than seeding a garbage crop.
+
+- Upgraded upstream Tabulate from v1.5.1 to v1.6.0
+
+
 ## 1.6.0
 
 ### Added
