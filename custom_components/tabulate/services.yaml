@@ -1,0 +1,61 @@
+add_receipt:
+  name: Add receipt
+  description: >-
+    Upload a scanned receipt image to the Tabulate add-on for OCR + AI
+    extraction and categorization.
+  fields:
+    image_base64:
+      name: Image (base64)
+      description: >-
+        A single receipt image, base64-encoded. Accepts JPEG, PNG, WEBP, TIFF,
+        HEIC, or PDF up to 20 MB. A data: URI prefix is tolerated. Provide this
+        or images_base64.
+      required: false
+      example: "/9j/4AAQSkZJRgABAQAAAQ..."
+      selector:
+        text:
+          multiline: true
+    images_base64:
+      name: Images (base64 list)
+      description: >-
+        A list of base64-encoded images to add as separate receipts in one call.
+        Each is uploaded independently. Use this instead of image_base64 when a
+        scan produced multiple images.
+      required: false
+      example: '["/9j/4AAQSkZJRg...", "/9j/4AAQSkZJRg..."]'
+      selector:
+        object:
+    filename:
+      name: File name
+      description: File name to send with the upload.
+      required: false
+      example: receipt.jpg
+      default: receipt.jpg
+      selector:
+        text:
+    content_type:
+      name: Content type
+      description: MIME type of the image.
+      required: false
+      example: image/jpeg
+      default: image/jpeg
+      selector:
+        text:
+    store_name_hint:
+      name: Store name hint
+      description: Optional hint to help identify the store on the receipt.
+      required: false
+      example: Trader Joe's
+      selector:
+        text:
+    wait_for_processing:
+      name: Wait for processing
+      description: >-
+        When on, the action holds the request open until Tabulate finishes
+        (seconds to ~120s) and returns the parsed receipt. Turn this off from
+        callers with a short timeout (e.g. Apple Shortcuts) to return
+        immediately and process the receipt in the background.
+      required: false
+      default: true
+      selector:
+        boolean:
