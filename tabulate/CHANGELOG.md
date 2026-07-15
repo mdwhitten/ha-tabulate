@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0
+
+
+### Added
+- **Companion Home Assistant integration** (`custom_components/tabulate`, installable via HACS) that adds a first-class `tabulate.add_receipt` action. It forwards a scanned receipt image to the add-on over the internal Supervisor network, so automations and external callers (e.g. an Apple Shortcut using VisionKit) can add receipts through Home Assistant's authenticated API instead of ingress.
+- The action has a `wait_for_processing` toggle: on (default) it returns the parsed receipt; off it uploads in the background and returns immediately, so callers with short timeouts don't fail.
+
+
 ## 2.0.0
 
 
