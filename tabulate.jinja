@@ -1,0 +1,26 @@
+{#-
+  Tabulate helper macros (HACS custom template).
+
+  HACS installs this file into `custom_templates/` in your Home Assistant
+  config. Import the macros in any template with:
+
+      {% from 'tabulate.jinja' import receipt_summary %}
+      {{ receipt_summary(my_response) }}
+
+  `receipt_summary` turns a `tabulate.add_receipt` response into a one-line
+  human summary. It accepts either shape returned by the action:
+    - a single receipt: {store_name, total, items, categorization_failed, ...}
+    - a batch:          {count, succeeded, failed, results: [...]}
+
+  Note: keys are read with subscript (response['items']) rather than
+  attribute access, because dict method names like `items` shadow keys.
+-#}
+{%- macro receipt_summary(response) -%}
+{%- if response is mapping and response['results'] is defined -%}
+{{ response['count'] | default(0) }} receipts added ({{ response['succeeded'] | default(0) }} ok, {{ response['failed'] | default(0) }} failed)
+{%- elif response is mapping and response['store_name'] is defined -%}
+{{ response['store_name'] }}{% if response['total'] is defined and response['total'] is not none %} — {{ response['total'] }}{% endif %} · {{ (response['items'] | default([])) | length }} items{% if response['categorization_failed'] | default(false) %} (categorization failed){% endif %}
+{%- else -%}
+No receipt data
+{%- endif -%}
+{%- endmacro -%}

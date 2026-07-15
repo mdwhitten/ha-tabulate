@@ -16,10 +16,15 @@ jobs:
       - uses: home-assistant/actions/hassfest@master
 
   hacs:
-    name: HACS
+    name: HACS (${{ matrix.category }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [integration, template]
     steps:
       - uses: actions/checkout@v4
       - uses: hacs/action@main
         with:
-          category: integration
+          category: ${{ matrix.category }}
+          ignore: brands

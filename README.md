@@ -101,6 +101,23 @@ Multi-page scans of a *single* long receipt are different: use **Combine
 Images → Vertically** into one image first, then send it as a single
 `image_base64`. Large batches are gentler on memory via option A.
 
+### Optional: receipt-summary template
+
+This repo also ships a small **HACS template** (`tabulate.jinja`) — a reusable
+Jinja macro for formatting an `add_receipt` response. It's independent of the
+integration (the action itself comes from the integration above; the template
+is just a display helper). Add the repository to HACS as a **Template** to
+install it into `custom_templates/`, then:
+
+```jinja
+{% from 'tabulate.jinja' import receipt_summary %}
+{{ receipt_summary(response) }}
+{# "Trader Joe's — 42.17 · 12 items"  (single receipt) #}
+{# "3 receipts added (2 ok, 1 failed)"  (images_base64 batch) #}
+```
+
+It accepts either response shape (single receipt or batch summary).
+
 ## Add-ons in this repository
 
 ### [Tabulate](./tabulate)
