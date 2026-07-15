@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0
+
+
+### Changed
+- YNAB sync now distributes a receipt's tax/discount/reconciliation remainder proportionally across the transaction's categories (by each category's line-item share) instead of assigning it all to the default category. With a single category the whole remainder folds into it. Split amounts still sum exactly to the receipt total.
+
+- Upgraded upstream Tabulate from v2.0.0 to v2.1.0
+
+
 ## 2.1.0
 
 
