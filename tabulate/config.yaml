@@ -18,9 +18,11 @@ map:
   - addon_config:rw
 options:
   anthropic_api_key: ""
+  ynab_api_token: ""
   verbose_logging: false
 schema:
   anthropic_api_key: password
+  ynab_api_token: password?
   verbose_logging: bool
 image: ghcr.io/mdwhitten/ha-tabulate-{arch}
 ports:
