@@ -1,0 +1,27 @@
+# Tabulate — Home Assistant integration
+
+Companion integration for the **Tabulate** add-on. It adds a first-class
+`tabulate.add_receipt` action that hands a scanned receipt image to the add-on
+for OCR + AI extraction and categorization — so automations and Apple Shortcuts
+(VisionKit document scans) can add receipts through Home Assistant's
+authenticated API instead of ingress.
+
+{% if installed %}
+You have **v{{ version_installed }}** installed.
+{% if pending_update %}
+An update to **v{{ version_available }}** is available.
+{% endif %}
+{% else %}
+Latest version: **v{{ version_available }}**
+{% endif %}
+
+## Setup
+
+1. Install and start the **Tabulate** add-on from this repository.
+2. Add the **Tabulate** integration (Settings → Devices & Services). It
+   auto-detects the running add-on; otherwise enter its host and port manually.
+3. Call the `tabulate.add_receipt` action. Pass a single `image_base64`, or a
+   list via `images_base64` to add several receipts in one call. Set
+   `wait_for_processing: false` for callers with short timeouts (e.g. Shortcuts).
+
+See the repository README for the full Apple Shortcuts recipe.

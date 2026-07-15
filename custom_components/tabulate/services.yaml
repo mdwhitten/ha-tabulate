@@ -7,13 +7,24 @@ add_receipt:
     image_base64:
       name: Image (base64)
       description: >-
-        The receipt image, base64-encoded. Accepts JPEG, PNG, WEBP, TIFF, HEIC,
-        or PDF up to 20 MB. A data: URI prefix is tolerated.
-      required: true
+        A single receipt image, base64-encoded. Accepts JPEG, PNG, WEBP, TIFF,
+        HEIC, or PDF up to 20 MB. A data: URI prefix is tolerated. Provide this
+        or images_base64.
+      required: false
       example: "/9j/4AAQSkZJRgABAQAAAQ..."
       selector:
         text:
           multiline: true
+    images_base64:
+      name: Images (base64 list)
+      description: >-
+        A list of base64-encoded images to add as separate receipts in one call.
+        Each is uploaded independently. Use this instead of image_base64 when a
+        scan produced multiple images.
+      required: false
+      example: '["/9j/4AAQSkZJRg...", "/9j/4AAQSkZJRg..."]'
+      selector:
+        object:
     filename:
       name: File name
       description: File name to send with the upload.

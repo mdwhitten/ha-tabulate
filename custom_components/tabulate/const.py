@@ -20,6 +20,7 @@ SERVICE_ADD_RECEIPT = "add_receipt"
 
 # Service field names.
 ATTR_IMAGE_BASE64 = "image_base64"
+ATTR_IMAGES_BASE64 = "images_base64"
 ATTR_FILENAME = "filename"
 ATTR_CONTENT_TYPE = "content_type"
 ATTR_STORE_NAME_HINT = "store_name_hint"

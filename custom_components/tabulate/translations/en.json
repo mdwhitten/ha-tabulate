@@ -25,7 +25,11 @@
       "fields": {
         "image_base64": {
           "name": "Image (base64)",
-          "description": "The receipt image, base64-encoded. Accepts JPEG, PNG, WEBP, TIFF, HEIC, or PDF up to 20 MB. A data: URI prefix is tolerated."
+          "description": "A single receipt image, base64-encoded. Accepts JPEG, PNG, WEBP, TIFF, HEIC, or PDF up to 20 MB. A data: URI prefix is tolerated. Provide this or images_base64."
+        },
+        "images_base64": {
+          "name": "Images (base64 list)",
+          "description": "A list of base64-encoded images to add as separate receipts in one call. Use this instead of image_base64 when a scan produced multiple images."
         },
         "filename": {
           "name": "File name",
