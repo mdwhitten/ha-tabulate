@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.0.0
+
+
+### Added
+- **YNAB integration** — optionally sync approved receipts to YNAB as transactions. Disabled by default and gated on a  env var; when off or on error it never blocks or fails a receipt save.
+- Added  and documented , , and  in the README.
+
+### Changed
+- The YNAB integration now uses the official  Python SDK instead of hand-rolled HTTP calls.
+
+### Fixed
+- Re-syncing an edited receipt now reflects the changes. The YNAB API can't update a split transaction (date/amount/category edits are ignored and subtransactions can't be changed), so split transactions are deleted and recreated; single-category transactions are updated in place, preserving any existing YNAB match.
+- Manual total entry: typing a multi-digit total (e.g. 300) no longer commits the first digit and clears the field — the value is now committed on blur/Enter.
+- The receipt store-name field now shows a clear hover/focus affordance (and a correctly-aligned pencil icon) so it reads as editable.
+
+- Upgraded upstream Tabulate from v1.6.0 to v2.0.0
+
+
 ## 1.7.0
 
 
