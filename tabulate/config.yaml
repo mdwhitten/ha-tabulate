@@ -1,5 +1,5 @@
 name: Tabulate
-version: "2.2.0"
+version: "2.3.0"
 slug: tabulate
 description: Grocery receipt tracker with OCR + AI categorization
 url: https://github.com/mdwhitten/ha-tabulate

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.3.0
+
+
+### Added
+- Receipt review view now has **prev/next arrows** (with an n/m position) to step through receipts without returning to the list. Navigation follows the current filtered list — e.g. filtered to Pending, the arrows move between pending receipts.
+- Receipt review view has an **Auto-categorized only** filter that shows just the items still AI-categorized, hiding learned/manual/corrected items so you only review what needs checking. It clears automatically once every item has been reviewed.
+
+### Changed
+- The receipts list filter (search + status) now persists when you open a receipt and go back, instead of resetting to All.
+
+- Upgraded upstream Tabulate from v2.1.0 to v2.2.0
+
+
 ## 2.2.0
 
 
