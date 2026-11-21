@@ -1,12 +1,20 @@
 # Changelog
 
+## 2.4.1
+
+### Fixed
+- The add-on now installs the Anthropic Python SDK version that Tabulate v2.3.0 was built and tested with (2.12.0); it was still installing 0.83.0.
+- The 2.4.0 changelog entry was missing text that appeared in `code` formatting; it is restored.
+
+### Changed
+- Python dependencies now follow upstream automatically: each upstream update copies Tabulate's `backend/requirements.txt` verbatim (versions included) instead of only adding missing packages.
+
 ## 2.4.0
 
-
 ### Added
-- **Live upload progress** — the upload screen now shows the real processing stage (preparing, reading, checking totals, categorizing & saving) with a live N items found count, streamed from a new  endpoint, instead of timed placeholder steps.
-- New optional settings:  (default ),  (default ) and  (default ).
--  for checking extraction accuracy and speed on a real receipt.
+- **Live upload progress** — the upload screen now shows the real processing stage (preparing, reading, checking totals, categorizing & saving) with a live "N items found" count, streamed from a new `POST /api/receipts/upload-stream` endpoint, instead of timed placeholder steps.
+- New optional settings: `CLAUDE_MODEL` (default `claude-haiku-5-5`), `CLAUDE_EFFORT` (default `low`) and `STORED_IMAGE_MAX_WIDTH` (default `1200`).
+- `backend/scripts/eval_receipt.py` for checking extraction accuracy and speed on a real receipt.
 
 ### Changed
 - **AI-first receipt reading.** Claude now reads the full-resolution receipt in a single call and assigns each item's category at the same time; Tesseract OCR is only used as a fallback when no API key is set or the AI call fails. Long receipts are split into overlapping sections so they stay legible, and the extracted items are checked against the printed total and item count, with one automatic re-check when they don't match.
@@ -17,11 +25,9 @@
 
 ### Fixed
 - Long receipts (e.g. a 76-item ALDI receipt) no longer lose items or misread the total: the AI response was being cut off and the app silently fell back to OCR.
-- Letter-spaced totals () and  lines are now recognized by the OCR fallback.
+- Letter-spaced totals (`T O T A L`) and `AMOUNT DUE` lines are now recognized by the OCR fallback.
 - AI categorization results are matched to items by ID, so a missing result can no longer shift categories onto the wrong items, and large receipts no longer exceed the categorization response limit.
-
 - Upgraded upstream Tabulate from v2.2.0 to v2.3.0
-
 
 ## 2.3.0
 
