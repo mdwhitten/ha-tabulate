@@ -76,3 +76,18 @@ jobs:
           else
             echo "All upstream packages are present in requirements.txt"
           fi
+
+          # Pins should match upstream exactly (update-upstream copies the file
+          # verbatim). A differing version is allowed for hotfixes but flagged,
+          # since the next upstream sync will overwrite it.
+          norm() { grep -v '^[[:space:]]*\(#\|$\)' | tr '[:upper:]' '[:lower:]' | tr -d ' ' | sort; }
+          echo "$upstream_req" | norm > /tmp/upstream_pins
+          norm < tabulate/requirements.txt > /tmp/local_pins
+          differing=$(comm -13 /tmp/upstream_pins /tmp/local_pins)
+          if [ -n "$differing" ]; then
+            for pin in $differing; do
+              echo "::warning::tabulate/requirements.txt pin '$pin' differs from upstream ${upstream_tag} (it will be replaced on the next upstream sync)"
+            done
+          else
+            echo "All pins match upstream ${upstream_tag}"
+          fi

@@ -11,7 +11,7 @@ tabulate/
   build.yaml             # Base images per architecture (aarch64, amd64)
   CHANGELOG.md           # User-facing changelog (shown in HA UI)
   Dockerfile             # Multi-stage: clone tabulate repo → build frontend → assemble image
-  requirements.txt       # Python dependencies (FastAPI, aiosqlite, anthropic, etc.)
+  requirements.txt       # Python dependencies — a verbatim copy of upstream backend/requirements.txt
   rootfs/                # s6-overlay service scripts + nginx config
 .github/workflows/
   publish.yaml           # Builds & pushes Docker images on GitHub release
@@ -42,6 +42,10 @@ The Dockerfile clones `https://github.com/mdwhitten/tabulate.git` at a **pinned 
 6. The `publish.yaml` workflow triggers automatically, building and pushing `ghcr.io/mdwhitten/ha-tabulate-{amd64,aarch64}` images
 
 **Important**: The version in `config.yaml` must match the release tag (minus the `v` prefix). HA uses `config.yaml` version to detect updates.
+
+## Python Dependencies
+
+`tabulate/requirements.txt` mirrors upstream `backend/requirements.txt` at the pinned `TABULATE_VERSION`. The `update-upstream` workflow copies it verbatim on every upstream release (and lists the version changes in the PR), so change dependency versions upstream rather than here. `validate-pr` fails if an upstream package is missing and warns when a pin differs from upstream.
 
 ## Build Notes
 
