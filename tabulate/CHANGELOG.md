@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.2
+
+
+### Changed
+- Backend dependency pins raised to the versions the Home Assistant add-on already ships (FastAPI 0.129.2, uvicorn 0.41.0, aiosqlite 0.22.1, pydantic 2.12.5, python-multipart 0.0.22), so `backend/requirements.txt` can be the single source of truth the add-on copies on every release.
+
+### Fixed
+- The upload progress screen no longer stays on "Uploading image" for the whole wait when Tabulate runs behind Home Assistant ingress. Progress is now streamed as server-sent events (`text/event-stream`); the previous `application/x-ndjson` stream was compressed by the ingress proxy, which held every progress update until processing had finished.
+
+- Upgraded upstream Tabulate from v2.3.0 to v2.3.1
+
+
 ## 2.4.1
 
 ### Changed
