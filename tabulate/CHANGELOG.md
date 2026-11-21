@@ -2,12 +2,11 @@
 
 ## 2.4.1
 
-### Fixed
-- The add-on now installs the Anthropic Python SDK version that Tabulate v2.3.0 was built and tested with (2.12.0); it was still installing 0.83.0.
-- The 2.4.0 changelog entry was missing text that appeared in `code` formatting; it is restored.
-
 ### Changed
-- Python dependencies now follow upstream automatically: each upstream update copies Tabulate's `backend/requirements.txt` verbatim (versions included) instead of only adding missing packages.
+- Python dependencies now follow upstream automatically: each upstream update copies Tabulate's `backend/requirements.txt` verbatim (versions included) instead of only adding missing packages. The next upstream update brings the Anthropic Python SDK from 0.83.0 to 2.12.0, the version Tabulate is built and tested with.
+
+### Fixed
+- Changelog entries generated from upstream no longer lose text in `code` formatting; the 2.4.0 entry is restored.
 
 ## 2.4.0
 
